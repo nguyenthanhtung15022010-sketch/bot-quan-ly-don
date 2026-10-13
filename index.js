@@ -74,21 +74,43 @@ function buildOrderEmbed() {
 
 client.once('ready', () => console.log(`🤖 Bot ${client.user.tag} đã sẵn sàng!`));
 
+
 client.on('interactionCreate', async interaction => {
-    if (!interaction.isButton()) return;
+    // Xử lý khi nhấn nút "Xem đơn hàng"
+    if (interaction.isButton()) {
+        await interaction.deferReply({ flags: 64 }); // Phản hồi nhanh để tránh quá 3 giây
 
-    // 1. Dòng quan trọng nhất: Báo Discord biết bot đang xử lý để không bị quá 3 giây
-    await interaction.deferReply({ flags: 64 }); 
+        try {
+            // Thay thế nội dung đơn hàng thực tế của bạn vào đây
+            const embedDonHang = new EmbedBuilder()
+                .setTitle('📦 DANH SÁCH ĐƠN HÀNG')
+                .setDescription('Hiện tại chưa có đơn hàng nào mới hoặc các đơn đã được cập nhật.')
+                .setColor(0x00FF00);
 
-    try {
-        // 2. Code tạo embed / danh sách đơn hàng của bạn giữ nguyên ở đây
-        // (Ví dụ: const embed = new EmbedBuilder()... )
+            await interaction.editReply({ embeds: [embedDonHang] });
+        } catch (error) {
+            console.error(error);
+            await interaction.editReply({ content: 'Có lỗi xảy ra khi tải đơn hàng!' });
+        }
+        return;
+    }
 
-        // 3. Đổi interaction.reply(...) thành interaction.editReply(...)
-        await interaction.editReply({ embeds: [embed] }); 
-    } catch (error) {
-        console.error(error);
-        await interaction.editReply({ content: 'Có lỗi xảy ra khi tải đơn hàng!' });
+    // Xử lý Slash Command (Lệnh slash /tao_bang_don)
+    if (!interaction.isChatInputCommand()) return;
+
+    if (interaction.commandName === 'tao_bang_don') {
+        const embed = new EmbedBuilder()
+            .setTitle('📦 QUẢN LÝ ĐƠN HÀNG')
+            .setDescription('Nhấn **👀 Xem đơn hàng** để xem chi tiết.');
+
+        const row = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+                .setCustomId('btn_xem_don')
+                .setLabel('👀 Xem đơn hàng')
+                .setStyle(ButtonStyle.Success)
+        );
+
+        await interaction.reply({ embeds: [embed], components: [row] });
     }
     if (!interaction.isChatInputCommand()) return;
 
