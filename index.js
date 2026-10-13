@@ -75,8 +75,20 @@ function buildOrderEmbed() {
 client.once('ready', () => console.log(`🤖 Bot ${client.user.tag} đã sẵn sàng!`));
 
 client.on('interactionCreate', async interaction => {
-    if (interaction.isButton() && interaction.customId === 'btn_xem_don') {
-        return interaction.reply({ embeds: [buildOrderEmbed()], ephemeral: true });
+    if (!interaction.isButton()) return;
+
+    // 1. Dòng quan trọng nhất: Báo Discord biết bot đang xử lý để không bị quá 3 giây
+    await interaction.deferReply({ flags: 64 }); 
+
+    try {
+        // 2. Code tạo embed / danh sách đơn hàng của bạn giữ nguyên ở đây
+        // (Ví dụ: const embed = new EmbedBuilder()... )
+
+        // 3. Đổi interaction.reply(...) thành interaction.editReply(...)
+        await interaction.editReply({ embeds: [embed] }); 
+    } catch (error) {
+        console.error(error);
+        await interaction.editReply({ content: 'Có lỗi xảy ra khi tải đơn hàng!' });
     }
     if (!interaction.isChatInputCommand()) return;
 
