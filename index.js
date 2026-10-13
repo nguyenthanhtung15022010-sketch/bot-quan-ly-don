@@ -93,5 +93,4 @@ client.on('interactionCreate', async interaction => {
         await interaction.reply({ content: `🗑️ Đã xóa đơn #${id}!`, ephemeral: true });
     }
 });
-
-const TOKEN = 'process.env.DISCORD_TOKEN';
+client.login(process.env.DISCORD_TOKEN);
