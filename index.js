@@ -59,5 +59,46 @@ client.on('interactionCreate', async interaction => {
         await interaction.reply({ embeds: [embed], components: [row] });
     }
 });
+// Mảng lưu danh sách đơn hàng
+let danhSachDonHang = [
+    {
+        id: '#49',
+        ten: '2 Cob Jouan',
+        gia: '400m',
+        nguoiNhan: '<@neighbor>',
+        ghiChu: 'Có Base Sẵn ib Tung'
+    },
+    {
+        id: '#48',
+        ten: '2 Etz V2.2 + 1K5 Smoker',
+        gia: '550m',
+        nguoiNhan: '<@Dương>',
+        ghiChu: 'Etz Nối Liền... Smoker Yêu Thao Túng... Tự Đào Base'
+    }
+];
 
+// Trong client.on('interactionCreate', async interaction => { ...
+
+    // Xử lý lệnh /xoa_don
+    if (interaction.commandName === 'xoa_don') {
+        await interaction.deferReply({ flags: 64 }); // Tránh timeout 3s
+
+        let maDonInput = interaction.options.getString('ma_don').trim();
+
+        // Tự động thêm dấu # nếu người dùng chỉ nhập số (ví dụ gõ "48" -> "#48")
+        if (!maDonInput.startsWith('#')) {
+            maDonInput = `#${maDonInput}`;
+        }
+
+        // Tìm vị trí đơn hàng trong mảng
+        const index = danhSachDonHang.findIndex(don => don.id.toLowerCase() === maDonInput.toLowerCase());
+
+        if (index !== -1) {
+            const donDaXoa = danhSachDonHang.splice(index, 1)[0];
+            await interaction.editReply({ content: `✅ Đã xóa thành công đơn **${donDaXoa.id} — ${donDaXoa.ten}**!` });
+        } else {
+            await interaction.editReply({ content: `❌ Không thấy đơn **${maDonInput}** trong hệ thống!` });
+        }
+        return;
+    }
 client.login(process.env.DISCORD_TOKEN);
