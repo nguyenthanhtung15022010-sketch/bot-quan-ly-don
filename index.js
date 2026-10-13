@@ -76,17 +76,30 @@ client.once('ready', () => console.log(`🤖 Bot ${client.user.tag} đã sẵn s
 
 
 client.on('interactionCreate', async interaction => {
-    // Xử lý khi nhấn nút "Xem đơn hàng"
+    // 1. Xử lý khi bấm nút "Xem đơn hàng"
     if (interaction.isButton()) {
-        await interaction.deferReply({ flags: 64 }); // Phản hồi nhanh để tránh quá 3 giây
+        // Phản hồi ngay lập tức để Discord không báo lỗi quá 3 giây
+        await interaction.deferReply({ flags: 64 });
 
         try {
-            // Thay thế nội dung đơn hàng thực tế của bạn vào đây
+            // Tạo bảng danh sách đơn hàng
             const embedDonHang = new EmbedBuilder()
-                .setTitle('📦 DANH SÁCH ĐƠN HÀNG')
-                .setDescription('Hiện tại chưa có đơn hàng nào mới hoặc các đơn đã được cập nhật.')
-                .setColor(0x00FF00);
+                .setTitle('📦 DANH SÁCH ĐƠN HÀNG HÔM NAY')
+                .setColor(0x0099FF)
+                .addFields(
+                    { 
+                        name: '#49 — 2 Cob Jouan', 
+                        value: '💰 **Giá:** 400m\n🟢 **Đã có người nhận:** <@neighbor>\n📝 Có Base Sẵn ib Tung' 
+                    },
+                    { 
+                        name: '#48 — 2 Etz V2.2 + 1K5 Smoker', 
+                        value: '💰 **Giá:** 550m\n🟢 **Đã có người nhận:** <@Dương>\n📝 Etz Nối Liền... Smoker Yêu Thao Túng... Tự Đào Base' 
+                    }
+                )
+                .setFooter({ text: 'Cập nhật tự động từ hệ thống' })
+                .setTimestamp();
 
+            // Gửi bảng đơn hàng trả lời người bấm nút
             await interaction.editReply({ embeds: [embedDonHang] });
         } catch (error) {
             console.error(error);
@@ -95,13 +108,14 @@ client.on('interactionCreate', async interaction => {
         return;
     }
 
-    // Xử lý Slash Command (Lệnh slash /tao_bang_don)
+    // 2. Xử lý câu lệnh /tao_bang_don
     if (!interaction.isChatInputCommand()) return;
 
     if (interaction.commandName === 'tao_bang_don') {
         const embed = new EmbedBuilder()
             .setTitle('📦 QUẢN LÝ ĐƠN HÀNG')
-            .setDescription('Nhấn **👀 Xem đơn hàng** để xem chi tiết.');
+            .setDescription('Nhấn **👀 Xem đơn hàng** để xem chi tiết.')
+            .setColor(0x00FF00);
 
         const row = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
