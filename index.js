@@ -92,5 +92,16 @@ client.on('interactionCreate', async interaction => {
         orders.splice(idx, 1);
         await interaction.reply({ content: `🗑️ Đã xóa đơn #${id}!`, ephemeral: true });
     }
+const express = require('express');
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+    res.send('Bot is running!');
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is listening on port ${PORT}`);
+});
 });
 client.login(process.env.DISCORD_TOKEN);
