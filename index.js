@@ -9,8 +9,19 @@ const {
     ButtonBuilder, 
     ButtonStyle 
 } = require('discord.js');
+const express = require('express');
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-const TOKEN = 'process.env.DISCORD_TOKEN';
+app.get('/', (req, res) => {
+    res.send('Bot Discord is running!');
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is listening on port ${PORT}`);
+});
+
+const TOKEN = process.env.DISCORD_TOKEN;
 const CLIENT_ID = '1559102669291786280';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
